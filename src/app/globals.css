@@ -33,6 +33,25 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
+  position: relative;
+}
+
+/* Grão de filme sutil sobre todo o site — textura cinematográfica discreta. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    display: none;
+  }
 }
 
 @keyframes marquee {
@@ -52,4 +71,98 @@ body {
   .animate-marquee {
     animation: none;
   }
+}
+
+/* Fumaça/névoa atmosférica — camadas de blobs desfocados que derivam
+   lentamente. Usado no hero para dar profundidade cinematográfica. */
+@keyframes smoke-drift-1 {
+  0%, 100% {
+    transform: translate(-8%, -4%) scale(1);
+  }
+  50% {
+    transform: translate(6%, 5%) scale(1.15);
+  }
+}
+
+@keyframes smoke-drift-2 {
+  0%, 100% {
+    transform: translate(6%, 6%) scale(1.1);
+  }
+  50% {
+    transform: translate(-10%, -3%) scale(1);
+  }
+}
+
+@keyframes smoke-drift-3 {
+  0%, 100% {
+    transform: translate(0%, 8%) scale(1);
+  }
+  50% {
+    transform: translate(4%, -6%) scale(1.2);
+  }
+}
+
+.smoke-layer {
+  position: absolute;
+  inset: -20%;
+  filter: blur(60px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.smoke-blob-1 {
+  position: absolute;
+  top: 5%;
+  left: 10%;
+  width: 45%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(229, 161, 59, 0.16), transparent 70%);
+  animation: smoke-drift-1 22s ease-in-out infinite;
+}
+
+.smoke-blob-2 {
+  position: absolute;
+  bottom: 0%;
+  right: 5%;
+  width: 50%;
+  height: 65%;
+  background: radial-gradient(circle, rgba(245, 245, 245, 0.06), transparent 70%);
+  animation: smoke-drift-2 28s ease-in-out infinite;
+}
+
+.smoke-blob-3 {
+  position: absolute;
+  bottom: 10%;
+  left: 20%;
+  width: 40%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.4), transparent 70%);
+  animation: smoke-drift-3 25s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smoke-blob-1,
+  .smoke-blob-2,
+  .smoke-blob-3 {
+    animation: none;
+  }
+}
+
+/* Vinheta — escurece as bordas para focar o olhar no centro. */
+.vignette::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 18vw 2vw rgba(0, 0, 0, 0.85);
+}
+
+/* Brilho de destaque — usado em hovers de cards e botões. */
+.glow-accent {
+  box-shadow: 0 0 0 rgba(229, 161, 59, 0);
+  transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.glow-accent:hover {
+  box-shadow: 0 8px 40px -8px rgba(229, 161, 59, 0.35), 0 2px 12px rgba(0, 0, 0, 0.6);
 }

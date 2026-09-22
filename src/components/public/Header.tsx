@@ -17,7 +17,7 @@ export function Header({ nomeSite }: { nomeSite: string }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-background/80 backdrop-blur-md">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-background/80 shadow-[0_4px_30px_rgba(0,0,0,0.5)] backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="font-display text-xl tracking-widest uppercase">
           {nomeSite}

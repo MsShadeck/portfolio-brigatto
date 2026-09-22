@@ -22,7 +22,7 @@ export default async function ClientesPage() {
       <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {clientes.map((cliente, index) => (
           <Reveal key={cliente.id} delay={(index % 6) * 60}>
-            <div className="group border border-border bg-surface p-8 transition-all duration-300 hover:-translate-y-1 hover:border-accent/50">
+            <div className="group border border-border bg-surface p-8 shadow-[0_4px_16px_rgba(0,0,0,0.3)] transition-all duration-300 hover:-translate-y-1 hover:border-accent/50 hover:shadow-[0_16px_40px_-8px_rgba(229,161,59,0.25),0_4px_16px_rgba(0,0,0,0.5)]">
               <div className="relative h-16 w-full">
                 <Image
                   src={cliente.logoUrl}

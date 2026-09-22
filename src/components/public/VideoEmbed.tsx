@@ -34,12 +34,12 @@ export function VideoEmbed({
     <button
       type="button"
       onClick={() => setLoaded(true)}
-      className="group relative block aspect-video w-full overflow-hidden rounded-lg bg-black"
+      className="group relative block aspect-video w-full overflow-hidden rounded-lg bg-black shadow-[0_20px_60px_-12px_rgba(0,0,0,0.8)]"
       aria-label={`Assistir: ${titulo}`}
     >
       <Image src={thumbnailUrl} alt={titulo} fill className="object-cover opacity-80" />
       <div className="absolute inset-0 flex items-center justify-center bg-black/30 transition-colors group-hover:bg-black/50">
-        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent text-accent-foreground transition-transform group-hover:scale-110">
+        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-[0_0_0_rgba(229,161,59,0)] transition-all group-hover:scale-110 group-hover:shadow-[0_0_40px_rgba(229,161,59,0.6)]">
           <svg viewBox="0 0 24 24" fill="currentColor" className="ml-1 h-6 w-6">
             <path d="M8 5v14l11-7z" />
           </svg>

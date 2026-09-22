@@ -22,7 +22,7 @@ export function VideoCard({ video }: { video: VideoComRelacoes }) {
         }
       }}
     >
-      <div className="relative aspect-video overflow-hidden bg-surface">
+      <div className="relative aspect-video overflow-hidden bg-surface shadow-[0_8px_24px_rgba(0,0,0,0.4)] transition-shadow duration-500 group-hover:shadow-[0_20px_60px_-8px_rgba(229,161,59,0.3),0_8px_24px_rgba(0,0,0,0.6)]">
         <Image
           src={video.thumbnailUrl}
           alt={video.titulo}
