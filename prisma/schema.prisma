@@ -1,0 +1,85 @@
+// Em produção: trocar provider para "postgresql" e apontar DATABASE_URL
+// para o banco Neon/Supabase.
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  nome      String
+  email     String   @unique
+  senhaHash String
+  criadoEm  DateTime @default(now())
+}
+
+model Video {
+  id           String    @id @default(cuid())
+  titulo       String
+  slug         String    @unique
+  urlVideo     String
+  thumbnailUrl String
+  previewUrl   String?
+  descricao    String?
+  ano          Int
+  funcao       String?
+  destaque     Boolean   @default(false)
+  publicado    Boolean   @default(false)
+  ordem        Int       @default(0)
+  clienteId    String?
+  cliente      Cliente?  @relation(fields: [clienteId], references: [id])
+  categoriaId  String
+  categoria    Categoria @relation(fields: [categoriaId], references: [id])
+  criadoEm     DateTime  @default(now())
+  atualizadoEm DateTime  @updatedAt
+
+  @@index([clienteId])
+  @@index([categoriaId])
+}
+
+model Cliente {
+  id         String  @id @default(cuid())
+  nome       String
+  logoUrl    String
+  site       String?
+  depoimento String?
+  ordem      Int     @default(0)
+  videos     Video[]
+}
+
+model Categoria {
+  id     String  @id @default(cuid())
+  nome   String
+  slug   String  @unique
+  videos Video[]
+}
+
+model Mensagem {
+  id          String   @id @default(cuid())
+  nome        String
+  email       String
+  telefone    String?
+  tipoProjeto String?
+  texto       String
+  lida        Boolean  @default(false)
+  criadoEm    DateTime @default(now())
+}
+
+model Configuracao {
+  id           String  @id @default("singleton")
+  nomeSite     String
+  heroTitulo   String
+  heroTexto    String?
+  showreelUrl  String?
+  bio          String?
+  fotoUrl      String?
+  instagramUrl String?
+  youtubeUrl   String?
+  linkedinUrl  String?
+  whatsapp     String?
+  emailContato String?
+}
