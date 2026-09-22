@@ -1,7 +1,5 @@
-// Em produção: trocar provider para "postgresql" e apontar DATABASE_URL
-// para o banco Neon/Supabase.
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

@@ -7,7 +7,7 @@ o dia a dia (adicionar vídeos, trocar textos, responder mensagens etc.).
 ## Stack
 
 - **Next.js 16** (App Router) + TypeScript + Tailwind CSS 4
-- **Prisma 6** + SQLite (dev) / PostgreSQL (produção — Neon ou Supabase)
+- **Prisma 6** + PostgreSQL (Neon, integrado na Vercel, ou Supabase)
 - **Auth.js (NextAuth v5)** — login por e-mail/senha com bcrypt
 - **Vercel Blob** — upload de thumbnails, logos e foto de perfil
 - **Zod** — validação de formulários
@@ -20,6 +20,8 @@ o dia a dia (adicionar vídeos, trocar textos, responder mensagens etc.).
 ### Pré-requisitos
 
 - [Node.js](https://nodejs.org) 20 ou superior
+- Uma string de conexão Postgres (veja a seção 2 — o mais simples é criar um
+  banco Neon gratuito direto pelo painel da Vercel, mesmo antes de fazer deploy)
 
 ### Passo a passo
 
@@ -29,11 +31,11 @@ npm install
 
 # 2. Copiar o arquivo de variáveis de ambiente
 cp .env.example .env
-# Edite o .env e preencha pelo menos AUTH_SECRET, ADMIN_EMAIL e ADMIN_PASSWORD
+# Edite o .env e preencha DATABASE_URL, AUTH_SECRET, ADMIN_EMAIL e ADMIN_PASSWORD
 # (gere o AUTH_SECRET com: npx auth secret)
 
-# 3. Criar o banco e aplicar o schema
-npx prisma migrate dev
+# 3. Aplicar o schema no banco (primeira vez)
+npx prisma migrate dev --name init
 
 # 4. Popular o banco com o usuário admin e alguns dados de exemplo
 npm run db:seed
@@ -55,18 +57,23 @@ Acesse `http://localhost:3000` para o site público e
 
 ## 2. Banco de dados
 
-- **Desenvolvimento:** SQLite local, arquivo em `prisma/dev.db` (já
-  configurado, nada a fazer).
-- **Produção:** troque `provider = "sqlite"` para `provider = "postgresql"`
-  em `prisma/schema.prisma` e aponte `DATABASE_URL` para o banco Postgres
-  (ex.: [Neon](https://neon.tech) ou [Supabase](https://supabase.com), ambos
-  com plano gratuito). Depois rode `npx prisma migrate deploy`.
+O projeto usa Postgres tanto em desenvolvimento quanto em produção (não há
+mais SQLite — simplifica não ter dois dialetos de SQL diferentes).
+
+- **Criar um banco gratuito:** o mais simples é pelo próprio painel da
+  Vercel — Storage → Create Database → Postgres (usa [Neon](https://neon.tech)
+  por baixo). Alternativa: criar direto em [neon.tech](https://neon.tech) ou
+  [supabase.com](https://supabase.com).
+- Copie a connection string gerada para `DATABASE_URL` no `.env` (local) e
+  nas variáveis de ambiente do projeto na Vercel (produção) — pode ser o
+  **mesmo banco** para os dois, ou uma branch/projeto separado para dev.
 
 Comandos úteis:
 
 ```bash
-npx prisma studio       # interface visual para ver/editar os dados
-npx prisma migrate dev  # aplicar mudanças no schema durante o desenvolvimento
+npx prisma studio        # interface visual para ver/editar os dados
+npx prisma migrate dev   # aplicar mudanças no schema durante o desenvolvimento
+npx prisma migrate deploy # aplicar migrações existentes (usado em produção)
 ```
 
 ---
@@ -92,22 +99,21 @@ Sem essa variável configurada, tudo funciona exceto o upload de novas imagens.
 
 1. Suba o projeto para um repositório no GitHub/GitLab/Bitbucket.
 2. Em [vercel.com/new](https://vercel.com/new), importe o repositório.
-3. Configure as variáveis de ambiente do projeto (mesmas do `.env`, com
-   valores de produção):
+3. Crie o banco Postgres (Storage → Create Database → Postgres) — a
+   `DATABASE_URL` é preenchida automaticamente.
+4. Crie o Blob Store (Storage → Create Database → Blob) — o
+   `BLOB_READ_WRITE_TOKEN` também é preenchido automaticamente.
+5. Configure as demais variáveis de ambiente do projeto:
    - `NEXT_PUBLIC_SITE_URL` — a URL final do site
-   - `DATABASE_URL` — string de conexão do Postgres (Neon/Supabase)
    - `AUTH_SECRET`
    - `ADMIN_NOME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` (usados só no seed inicial)
-   - `BLOB_READ_WRITE_TOKEN` (criado automaticamente ao conectar o Blob Store)
-4. Antes do primeiro deploy, troque o `provider` do Prisma para
-   `"postgresql"` (ver seção 2) e faça commit.
-5. Depois do primeiro deploy, rode a migração e o seed contra o banco de
-   produção (uma vez):
+6. Depois do primeiro deploy, rode a migração e o seed contra o banco de
+   produção (uma vez, do seu computador):
    ```bash
-   DATABASE_URL="<sua-connection-string>" npx prisma migrate deploy
-   DATABASE_URL="<sua-connection-string>" npm run db:seed
+   DATABASE_URL="<connection-string-copiada-da-vercel>" npx prisma migrate deploy
+   DATABASE_URL="<connection-string-copiada-da-vercel>" npm run db:seed
    ```
-6. Troque a senha do admin pelo próprio painel (`/admin/conta`) assim que
+7. Troque a senha do admin pelo próprio painel (`/admin/conta`) assim que
    acessar em produção.
 
 ---
